@@ -1,6 +1,8 @@
 import streamlit as st
 import time
 import re
+import logging
+from datetime import datetime
 
 st.sidebar.header("Hinweis zu den Stichwörtern:")
 st.sidebar.markdown("""
@@ -34,6 +36,15 @@ st.sidebar.markdown("""
     - Fühlt sich oft nach der Arbeit angestrengt
 """)
 
+logging.basicConfig(filename='logs/user_inputs.log',
+                    level=logging.INFO,
+                    format='%(asctime)s - %(message)s',
+                    datefmt='%Y-%m-%d %H:%M:%S')
+
+def log_user_input(input_text):
+    logging.info(input_text)
+
+
 keyword_to_response = {
     'präventive maßnahmen diskutieren:|präventive maßnahmen diskutieren': "Verstanden. Wenn man eine familiäre Vorgeschichte hat, steigt das Risiko, an Bluthochdruck zu erkranken. Sie erkennen, das ist ein wichtiger Punkt. Um Ihnen weitere Vorschläge machen zu können, würde ich gerne mehr über Ihre Lebensgewohnheiten erfahren. Wie ernähren Sie sich? Wie viel Salz nehmen Sie beispielweise täglich zu sich?",
     "empfohlene salzaufnahme:|empfohlene salzaufnahme": "Verstehe. Es scheint, dass Sie gut in dieser Angelegenheit handeln. Eine salzarme Ernährung verhindert die Bindung von überschüssigem Wasser im Körper, stabilisiert den Blutdruck und schützt so Herz und Organe. Ich empfehle Ihnen, die tägliche Salzaufnahme auf maximal 5 Gramm zu beschränken, was etwa einem Teelöffel entspricht. Wie ist außerdem das Verhältnis von Obst, Gemüse und Fetten in Ihrer täglichen Ernährung?",
@@ -45,24 +56,23 @@ keyword_to_response = {
 
 st.title("Medical AI Chatbot")
 
-# Initialize chat history
 if "messages" not in st.session_state:
     st.session_state.messages = [
         {"role": "assistant", "content": "Guten Tag! Wir wissen, dass die familiäre Vorgeschichte die Gesundheit einer Person beeinflussen kann. Die Anpassung von Lebensgewohnheiten ist der Schlüssel zur Krankheitsprävention. Hat Ihre Familie ähnliche Gesundheitsprobleme? Haben Sie darüber nachgedacht, wie Sie durch die Verbesserung Ihrer täglichen Gewohnheiten Ihre Gesundheit optimieren können?"}
     ]
 
-# Display chat messages from history on app rerun
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# Accept user input
 if prompt := st.chat_input("Bitte geben Sie Ihren Text im richtigen Format ein."):
     # Add user message to chat history
     st.session_state.messages.append({"role": "user", "content": prompt})
     # Display user message in chat message container
     with st.chat_message("user"):
         st.markdown(prompt)
+
+    log_user_input(prompt)
 
     found_response = False
     for pattern, response in keyword_to_response.items():
@@ -78,15 +88,11 @@ if prompt := st.chat_input("Bitte geben Sie Ihren Text im richtigen Format ein."
 
     current_text = ""
     for word in assistant_response.split():
-        # Update the placeholder with the current text plus the new word
         current_text += word + " "
         response_placeholder.text(current_text)
-        # Delay between words to simulate typing
         time.sleep(0.05)  # Delay for 0.5 seconds between words
     response_placeholder.empty()
-    # Display assistant response in chat message container
     with st.chat_message("assistant"):
         st.markdown(assistant_response)
-    # Add assistant response to chat history
     st.session_state.messages.append({"role": "assistant", "content": assistant_response})
 
