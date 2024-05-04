@@ -2,7 +2,17 @@ import streamlit as st
 import time
 import re
 import logging
-from datetime import datetime
+import logging.handlers
+
+def setup_papertrail_logging():
+    papertrail_handler = logging.handlers.SysLogHandler(address=('logs5.papertrailapp.com', 20304))
+    formatter = logging.Formatter('%(asctime)s %(levelname)s: %(message)s', datefmt='%b %d %H:%M:%S')
+    papertrail_handler.setFormatter(formatter)
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+    logger.addHandler(papertrail_handler)
+    return logger
+logger = setup_papertrail_logging()
 
 st.sidebar.header("Hinweis zu den Stichwörtern:")
 st.sidebar.markdown("""
@@ -36,14 +46,6 @@ st.sidebar.markdown("""
     - Fühlt sich oft nach der Arbeit angestrengt
 """)
 
-logging.basicConfig(filename='logs/user_inputs.log',
-                    level=logging.INFO,
-                    format='%(asctime)s - %(message)s',
-                    datefmt='%Y-%m-%d %H:%M:%S')
-
-def log_user_input(input_text):
-    logging.info(input_text)
-
 
 keyword_to_response = {
     'präventive maßnahmen diskutieren:|präventive maßnahmen diskutieren': "Verstanden. Wenn man eine familiäre Vorgeschichte hat, steigt das Risiko, an Bluthochdruck zu erkranken. Sie erkennen, das ist ein wichtiger Punkt. Um Ihnen weitere Vorschläge machen zu können, würde ich gerne mehr über Ihre Lebensgewohnheiten erfahren. Wie ernähren Sie sich? Wie viel Salz nehmen Sie beispielweise täglich zu sich?",
@@ -66,13 +68,11 @@ for message in st.session_state.messages:
         st.markdown(message["content"])
 
 if prompt := st.chat_input("Bitte geben Sie Ihren Text im richtigen Format ein."):
-    # Add user message to chat history
     st.session_state.messages.append({"role": "user", "content": prompt})
-    # Display user message in chat message container
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    log_user_input(prompt)
+   logger.info(f"User input logged: {prompt}")
 
     found_response = False
     for pattern, response in keyword_to_response.items():
@@ -90,7 +90,7 @@ if prompt := st.chat_input("Bitte geben Sie Ihren Text im richtigen Format ein."
     for word in assistant_response.split():
         current_text += word + " "
         response_placeholder.text(current_text)
-        time.sleep(0.05)  # Delay for 0.5 seconds between words
+        time.sleep(0.05)  
     response_placeholder.empty()
     with st.chat_message("assistant"):
         st.markdown(assistant_response)
