@@ -5,7 +5,6 @@ import logging
 import logging.handlers
 
 def setup_papertrail_logging():
-    # Replace 'logs5.papertrailapp.com' and '20304' with your actual Papertrail log destination and port
     papertrail_handler = logging.handlers.SysLogHandler(address=('logs5.papertrailapp.com', 20304))
     formatter = logging.Formatter('%(asctime)s %(levelname)s: %(message)s', datefmt='%b %d %H:%M:%S')
     papertrail_handler.setFormatter(formatter)
@@ -18,11 +17,11 @@ logger = setup_papertrail_logging()
 
 st.sidebar.header("Hinweis zu den Stichwörtern:")
 st.sidebar.markdown("""
-1. Präventive Maßnahmen diskutieren
-2. Empfohlene Salzaufnahme
-3. Empfehlungen für Gemüse und Obst
-4. Empfehlungen zur Trainingshäufigkeit
-5. Schrittweise Integration von Übungen
+1. Maßnahmen
+2. Salzaufnahme
+3. Gemüse, Obst und Fleisch
+4. Training
+5. Feierabend
 6. Abschluss
 """)
 
@@ -31,7 +30,7 @@ st.sidebar.markdown("""
 Stichwörter: Text.
 
 Zum Beispiel:
-- **Präventive Maßnahmen diskutieren**: Ich leide in meiner Familie an Bluthochdruck und hätte gerne Ratschläge zur Vorbeugung.
+- **Maßnahmen**: Ich leide in meiner Familie an Bluthochdruck und hätte gerne Ratschläge zur Vorbeugung.
 """, unsafe_allow_html=True)
 
 st.sidebar.header("Persona: Jim")
@@ -51,11 +50,11 @@ st.sidebar.markdown("""
 
 
 keyword_to_response = {
-    'präventive maßnahmen diskutieren:|präventive maßnahmen diskutieren': "Verstanden. Wenn man eine familiäre Vorgeschichte hat, steigt das Risiko, an Bluthochdruck zu erkranken. Sie erkennen, das ist ein wichtiger Punkt. Um Ihnen weitere Vorschläge machen zu können, würde ich gerne mehr über Ihre Lebensgewohnheiten erfahren. Wie ernähren Sie sich? Wie viel Salz nehmen Sie beispielweise täglich zu sich?",
-    "empfohlene salzaufnahme:|empfohlene salzaufnahme": "Verstehe. Es scheint, dass Sie gut in dieser Angelegenheit handeln. Eine salzarme Ernährung verhindert die Bindung von überschüssigem Wasser im Körper, stabilisiert den Blutdruck und schützt so Herz und Organe. Ich empfehle Ihnen, die tägliche Salzaufnahme auf maximal 5 Gramm zu beschränken, was etwa einem Teelöffel entspricht. Wie ist außerdem das Verhältnis von Obst, Gemüse und Fetten in Ihrer täglichen Ernährung?",
-    "empfehlungen für gemüse und obst:|empfehlungen für gemüse und obst": "Ich verstehe. Eine ausgewogene Ernährung kann dazu beitragen, Bluthochdruck vorzubeugen. Angesichts Ihrer Ernährungsgewohnheiten empfehle ich Ihnen, mehr frisches Gemüse und Obst zu essen. Bei der Auswahl von Fleischprodukten sollten Sie sich auf hochwertige Fette konzentrieren, wie sie zum Beispiel in magerem Fleisch und Fisch enthalten sind. Um die Vorteile einer ausgewogenen Ernährung voll auszuschöpfen, ist auch eine angemessene körperliche Betätigung wichtig. Bewegen Sie sich regelmäßig oder treiben Sie Sport?",
-    "empfehlungen zur trainingshäufigkeit:|empfehlungen zur trainingshäufigkeit": "Verstanden. Regelmäßige körperliche Aktivität kann oft einen positiven Einfluss auf hohen Blutdruck haben. Es scheint, dass Sie an sportlichen Aktivitäten interessiert sind, allerdings ist die Häufigkeit Ihrer Bewegung momentan eher gering. Wir würden Ihnen empfehlen, drei Mal pro Woche für 30 bis 45 Minuten ein regelmäßiges Ausdauertraining zu absolvieren. Gibt es bestimmte Zeiten, die für Sie am besten wären, um das Training in Ihren Alltag einzuplanen? Beispielsweise nach der Arbeit?",
-    "schrittweise integration von übungen:|schrittweise integration von übungen": "Das verstehe ich. Es ist immer eine Herausforderung, Arbeit und Sport im Gleichgewicht zu bringen. Ich empfehle Ihnen, die körperliche Aktivität schrittweise in Ihren Alltag zu integrieren. Zum Beispiel könnten Sie mit isometrischen Kraftübungen beginnen: Stellen Sie sich mit dem Rücken an die Wand, gehen Sie langsam in die Hocke und halten Sie diese Position für zwei Minuten. Das wiederholen Sie viermal hintereinander mit Pausen an drei Tagen pro Woche. Kann ich Ihnen noch mit etwas anderem behilflich sein?",
+    'maßnahmen:|maßnahmen': "Verstanden. Wenn man eine familiäre Vorgeschichte hat, steigt das Risiko, an Bluthochdruck zu erkranken. Sie erkennen, das ist ein wichtiger Punkt. Um Ihnen weitere Vorschläge machen zu können, würde ich gerne mehr über Ihre Lebensgewohnheiten erfahren. Wie ernähren Sie sich? Wie viel Salz nehmen Sie beispielweise täglich zu sich?",
+    "salz:|salz": "Verstehe. Es scheint, dass Sie gut in dieser Angelegenheit handeln. Eine salzarme Ernährung verhindert die Bindung von überschüssigem Wasser im Körper, stabilisiert den Blutdruck und schützt so Herz und Organe. Ich empfehle Ihnen, die tägliche Salzaufnahme auf maximal 5 Gramm zu beschränken, was etwa einem Teelöffel entspricht. Wie ist außerdem das Verhältnis von Obst, Gemüse und Fetten in Ihrer täglichen Ernährung?",
+    "gemüse, obst und fleisch:|gemüse, obst und fleisch": "Ich verstehe. Eine ausgewogene Ernährung kann dazu beitragen, Bluthochdruck vorzubeugen. Angesichts Ihrer Ernährungsgewohnheiten empfehle ich Ihnen, mehr frisches Gemüse und Obst zu essen. Bei der Auswahl von Fleischprodukten sollten Sie sich auf hochwertige Fette konzentrieren, wie sie zum Beispiel in magerem Fleisch und Fisch enthalten sind. Um die Vorteile einer ausgewogenen Ernährung voll auszuschöpfen, ist auch eine angemessene körperliche Betätigung wichtig. Bewegen Sie sich regelmäßig oder treiben Sie Sport?",
+    "training:|training:": "Verstanden. Regelmäßige körperliche Aktivität kann oft einen positiven Einfluss auf hohen Blutdruck haben. Es scheint, dass Sie an sportlichen Aktivitäten interessiert sind, allerdings ist die Häufigkeit Ihrer Bewegung momentan eher gering. Wir würden Ihnen empfehlen, drei Mal pro Woche für 30 bis 45 Minuten ein regelmäßiges Ausdauertraining zu absolvieren. Gibt es bestimmte Zeiten, die für Sie am besten wären, um das Training in Ihren Alltag einzuplanen? Beispielsweise nach der Arbeit?",
+    "feierabend:|feierabend": "Das verstehe ich. Es ist immer eine Herausforderung, Arbeit und Sport im Gleichgewicht zu bringen. Ich empfehle Ihnen, die körperliche Aktivität schrittweise in Ihren Alltag zu integrieren. Zum Beispiel könnten Sie mit isometrischen Kraftübungen beginnen: Stellen Sie sich mit dem Rücken an die Wand, gehen Sie langsam in die Hocke und halten Sie diese Position für zwei Minuten. Das wiederholen Sie viermal hintereinander mit Pausen an drei Tagen pro Woche. Kann ich Ihnen noch mit etwas anderem behilflich sein?",
     "abschluss:|abschluss": "Kein Problem. Bitte beachten Sie, dass meine Antworten nur Vorschläge sind. Bei konkreten medizinischen Fragen wenden Sie sich bitte an einen Facharzt. Ich wünsche Ihnen gute Gesundheit!"
 }
 
